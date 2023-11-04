@@ -1,0 +1,22 @@
+#!/bin/bash
+#Скрипт для упрощения компиляции и запуска .cpp программ с использованием gcc компилятора
+currdir=$(pwd)
+sfml="-sfml"
+gtk="-gtk-4"
+if [[ "$2" == "" ]]; then
+	gcc "$currdir/$1" -lstdc++ -lm
+	./a.out
+	rm a.out
+elif [[ "$2" == "$sfml" ]]; then
+	gcc "$currdir/$1" -lsfml-system -lsfml-window -lsfml-graphics -lstdc++ -lm
+	./a.out
+	rm a.out
+elif [[ "$2" == "$gtk" ]]; then
+	gcc $(pkg-config --cflags gtk4) "$currdir/$1" $(pkg-config --libs gtk4) -lstdc++ -lm
+	./a.out
+	rm a.out
+else
+	gcc "$currdir/$1" -lstdc++ -lm
+	./a.out "$2"
+	rm a.out
+fi

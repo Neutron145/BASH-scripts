@@ -1,0 +1,27 @@
+#!/bin/bash
+#Скрипт для переключения между оконными системами Xorg и Wayland
+
+path="/etc/gdm/custom.conf"
+if [[ "$1" == "--help" ]]; then
+	echo "Usage: xorway [MODE]"
+	echo -e "Switch window manager\n"
+	echo -e "\t-w, --wayland to set wayland"
+	echo -e "\t-x, --xorg to set xorg"
+	echo -e "\t-i, --info to show current window manager\n"
+	echo "By default, xorway show current window manager"
+elif [[ "$1" == "-w" || "$1" == "--wayland" ]]; then
+	echo "switch to wayland"
+	sudo sed -i 's/WaylandEnable=false/WaylandEnable=true/' "$path" 
+elif [[ "$1" == "-x" || "$1" == "--xorg" ]]; then
+	echo "switch to xorg"	
+	sudo sed -i 's/WaylandEnable=true/WaylandEnable=false/' "$path"
+elif [[ "$1" == "-i" || "$1" == "--info" || "$1" == "" ]]; then
+	status=$(echo | sed -n '7p' "$path")
+	if [[ "$status" == "WaylandEnable=true" ]]; then
+		echo "current window manager is wayland"
+	else
+		echo "current window manager is xorg"
+	fi
+else
+	echo -e "unknown command\ntype '--help'"
+fi

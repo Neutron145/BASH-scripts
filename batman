@@ -1,0 +1,28 @@
+#!/bin/bash
+#Скрипт для переключения режимов зарядки Lenovo IdeaPad L340
+
+if [[ "$1" == "--help" ]]; then
+	echo "Usage: batman [MODE]"
+	echo -e "Switch battery charging mode for IdeaPad L340\n"
+	echo -e "\t--help to call help"
+	echo -e "\t-s, --safe to set safe charging battery mode"
+	echo -e "\t-f, --full to set full charging battery mode"
+	echo -e "\t-i, --info to show info\n"
+	echo "By default, batman show current mode"
+elif [[ "$1" == "-f" || "$1" == "--full" ]]; then
+	echo "set full charging"
+	echo '\_SB.PCI0.LPCB.EC0.VPC0.SBMC 5' | sudo tee /proc/acpi/call
+elif [[ "$1" == "-s" || "$1" == "--safe" ]]; then
+	echo "set safe charging"
+	echo '\_SB.PCI0.LPCB.EC0.VPC0.SBMC 3' | sudo tee /proc/acpi/call
+elif [[ "$1" == "-i" || "$1" == "--info" || "$1" == "" ]]; then
+	status=$(cat /sys/bus/platform/drivers/ideapad_acpi/VPC2004:00/conservation_mode)
+	if [[ "$status" -eq "1" ]]; then
+		echo "Safe mode"
+	else 
+		echo "Full mode"
+	fi
+else
+	echo "unknown mode\ntype '--help'"
+fi
+
